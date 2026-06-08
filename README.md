@@ -29,7 +29,7 @@ This project introduces Spanish learners and university students to newspapers, 
 - Responsive design for mobile, tablet and desktop
 - Real photographs for each country section
 - External cultural and media links
-- Accessible card layout with alt text, focus states and semantic HTML
+- Accessible and attractive card layout with alt text, focus states and semantic HTML
 - Back-to-top button
 
 ## Data maintenance
