@@ -321,6 +321,10 @@ button:focus-visible,
   gap: 1rem;
 }
 
+.country-body[hidden] {
+  display: none;
+}
+
 .category-block {
   border-top: 1px solid var(--line);
   padding-top: 1rem;
