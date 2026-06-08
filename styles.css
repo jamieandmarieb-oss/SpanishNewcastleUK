@@ -51,21 +51,14 @@ select {
 .hero {
   min-height: 72vh;
   color: #fffaf3;
-  background:
-    linear-gradient(115deg, rgba(93, 31, 18, 0.93), rgba(151, 55, 30, 0.88) 45%, rgba(13, 88, 82, 0.9)),
-    url("https://commons.wikimedia.org/wiki/Special:FilePath/Plaza%20Mayor%20de%20Madrid%2006.jpg") center/cover;
+  background: url("https://commons.wikimedia.org/wiki/Special:FilePath/Las%20torres%20del%20Paine.jpg") center 45%/cover;
   display: grid;
   align-content: start;
   position: relative;
 }
 
 .hero::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;
-  height: 8rem;
-  background: linear-gradient(180deg, transparent, rgba(255, 253, 249, 0.95));
-  pointer-events: none;
+  content: none;
 }
 
 .top-nav {
@@ -85,6 +78,7 @@ select {
   font-weight: 700;
   padding: 0.45rem 0.65rem;
   border-radius: var(--radius);
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.82);
 }
 
 .top-nav a:focus-visible,
@@ -103,6 +97,7 @@ select {
   margin: clamp(2rem, 7vw, 6rem) auto 7rem;
   position: relative;
   z-index: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.88);
 }
 
 .kicker,
