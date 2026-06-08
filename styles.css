@@ -468,6 +468,53 @@ button:focus-visible,
   background: linear-gradient(135deg, #ffffff, #fff6e7);
 }
 
+.instagram-band {
+  margin: 0 0 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  color: #fffaf3;
+  background: #7d2a4a;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.instagram-band h2,
+.instagram-band p {
+  margin: 0;
+}
+
+.instagram-band h2 {
+  font-size: clamp(1.5rem, 3vw, 2.3rem);
+}
+
+.instagram-band .section-label {
+  margin-bottom: 0.35rem;
+  color: #ffdca1;
+}
+
+.instagram-band p:last-child {
+  margin-top: 0.45rem;
+  color: #f7dfe8;
+}
+
+.instagram-link {
+  flex: 0 0 auto;
+  padding: 0.75rem 1rem;
+  color: #5d1935;
+  background: #fffaf3;
+  border-radius: var(--radius);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.instagram-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(39, 9, 21, 0.22);
+}
+
 .back-to-top {
   position: fixed;
   right: 1rem;
@@ -539,6 +586,11 @@ footer .disclaimer {
   .about-band,
   .country-card {
     grid-template-columns: 1fr;
+  }
+
+  .instagram-band {
+    align-items: start;
+    flex-direction: column;
   }
 
   .controls-panel {
