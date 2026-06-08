@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Spanish Newcastle UK, a curated educational-cultural gateway to media and culture across the Hispanic world." />
+    <title>Spanish Newcastle UK</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero" id="top">
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="#countries" class="brand">Spanish Newcastle UK</a>
+        <a href="#resources">Resources</a>
+        <a href="#about">About</a>
+      </nav>
+
+      <section class="hero-content" aria-labelledby="page-title">
+        <p class="kicker">Noticias del Mundo Hispano</p>
+        <h1 id="page-title">Spanish Newcastle UK</h1>
+        <p class="subtitle">by María Zubelzu de Brown</p>
+        <p class="hero-description">
+          A curated gateway to newspapers, magazines, YouTube channels, musicians, artists, writers and celebrities from across the Hispanic world.
+        </p>
+      </section>
+    </header>
+
+    <main>
+      <section class="intro-band" id="resources" aria-labelledby="main-heading">
+        <div>
+          <p class="section-label">Educational Cultural Resource</p>
+          <h2 id="main-heading">Noticias del Mundo Hispano</h2>
+        </div>
+        <p>
+          Explore real Spanish-language media and cultural references from Spain and Latin America. Use the filters to focus by country, category or keyword.
+        </p>
+      </section>
+
+      <section class="controls-panel" aria-label="Search and filters">
+        <label class="control-field search-field" for="searchInput">
+          <span>Search</span>
+          <input id="searchInput" type="search" placeholder="Search countries, newspapers, artists, writers..." autocomplete="off" />
+        </label>
+
+        <label class="control-field" for="countryFilter">
+          <span>Country</span>
+          <select id="countryFilter">
+            <option value="all">All countries</option>
+          </select>
+        </label>
+
+        <label class="control-field" for="categoryFilter">
+          <span>Category</span>
+          <select id="categoryFilter">
+            <option value="all">All categories</option>
+          </select>
+        </label>
+
+        <button id="resetFilters" class="ghost-button" type="button">Reset filters</button>
+      </section>
+
+      <section class="results-meta" aria-live="polite">
+        <p id="resultCount">Loading resources...</p>
+      </section>
+
+      <section id="countries" class="countries-grid" aria-label="Country resource sections"></section>
+
+      <section class="about-band" id="about" aria-labelledby="about-heading">
+        <h2 id="about-heading">About This Resource</h2>
+        <p>
+          This page is designed for Spanish learners and university students who want trustworthy starting points for reading, listening and cultural discovery.
+          Links should be reviewed regularly because media sites, public profiles and channel URLs can change.
+        </p>
+      </section>
+    </main>
+
+    <button id="backToTop" class="back-to-top" type="button" aria-label="Back to top">↑</button>
+
+    <footer>
+      <p>Created as an educational cultural resource by María Zubelzu de Brown.</p>
+      <p>Please verify external links regularly, as media and cultural websites may change.</p>
+      <p class="disclaimer">
+        Academic disclaimer: inclusion supports educational and cultural discovery and does not imply endorsement of all content published by external websites or personalities.
+      </p>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
