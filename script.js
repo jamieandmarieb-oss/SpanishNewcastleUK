@@ -174,7 +174,12 @@ function createCountrySection(countryData, categoryKey = "all", query = "") {
 
   [toggle, bottomToggle].forEach((button) => {
     button.addEventListener("click", () => {
-      setExpanded(button.getAttribute("aria-expanded") !== "true");
+      const willExpand = button.getAttribute("aria-expanded") !== "true";
+      setExpanded(willExpand);
+
+      if (button === bottomToggle && !willExpand) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     });
   });
 

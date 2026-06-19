@@ -269,6 +269,7 @@ button:focus-visible,
   display: grid;
   grid-template-columns: minmax(240px, 0.38fr) minmax(0, 1fr);
   overflow: hidden;
+  scroll-margin-top: 5.5rem;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
