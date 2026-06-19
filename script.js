@@ -139,10 +139,14 @@ function createCountrySection(countryData, categoryKey = "all", query = "") {
   const titleRow = makeElement("div", "country-title-row");
   const title = makeElement("h2", "", `${countryData.flag} ${countryData.country}`);
   const toggle = makeElement("button", "collapse-button", "Collapse");
+  const bottomToggle = makeElement("button", "collapse-button collapse-button-bottom", "Collapse");
   const bodyId = `country-${normaliseText(countryData.country).replace(/\s+/g, "-")}`;
-  toggle.type = "button";
-  toggle.setAttribute("aria-expanded", "true");
-  toggle.setAttribute("aria-controls", bodyId);
+  [toggle, bottomToggle].forEach((button) => {
+    button.type = "button";
+    button.setAttribute("aria-expanded", "true");
+    button.setAttribute("aria-controls", bodyId);
+    button.setAttribute("aria-label", `Collapse ${countryData.country} resources`);
+  });
   titleRow.append(title, toggle);
 
   const intro = makeElement("p", "country-intro", countryData.intro);
@@ -157,15 +161,24 @@ function createCountrySection(countryData, categoryKey = "all", query = "") {
     }
   });
 
-  toggle.addEventListener("click", () => {
-    const expanded = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!expanded));
-    toggle.textContent = expanded ? "Expand" : "Collapse";
-    body.hidden = expanded;
-    section.classList.toggle("is-collapsed", expanded);
+  const setExpanded = (expanded) => {
+    body.hidden = !expanded;
+    section.classList.toggle("is-collapsed", !expanded);
+
+    [toggle, bottomToggle].forEach((button) => {
+      button.setAttribute("aria-expanded", String(expanded));
+      button.setAttribute("aria-label", `${expanded ? "Collapse" : "Expand"} ${countryData.country} resources`);
+      button.textContent = expanded ? "Collapse" : "Expand";
+    });
+  };
+
+  [toggle, bottomToggle].forEach((button) => {
+    button.addEventListener("click", () => {
+      setExpanded(button.getAttribute("aria-expanded") !== "true");
+    });
   });
 
-  content.append(titleRow, intro, body);
+  content.append(titleRow, intro, body, bottomToggle);
   section.append(header, content);
   return { element: section, entryCount: body.querySelectorAll(".entry-card").length };
 }

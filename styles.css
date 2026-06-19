@@ -311,6 +311,25 @@ button:focus-visible,
   background: var(--teal);
 }
 
+.collapse-button::before {
+  content: "−";
+  margin-right: 0.4rem;
+}
+
+.collapse-button[aria-expanded="false"]::before {
+  content: "+";
+}
+
+.collapse-button-bottom {
+  width: 100%;
+  margin-top: 1rem;
+  padding-block: 0.7rem;
+}
+
+.country-card.is-collapsed .collapse-button-bottom {
+  margin-top: 0;
+}
+
 .country-intro {
   margin: 0.75rem 0 1.2rem;
   color: var(--muted);
