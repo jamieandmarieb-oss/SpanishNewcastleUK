@@ -27,6 +27,7 @@ const categoryFilter = document.querySelector("#categoryFilter");
 const resetFilters = document.querySelector("#resetFilters");
 const resultCount = document.querySelector("#resultCount");
 const backToTop = document.querySelector("#backToTop");
+const displayControls = document.querySelectorAll("[data-display-control]");
 
 function normaliseText(value) {
   return String(value || "")
@@ -124,6 +125,24 @@ function createCategoryBlock(categoryKey, entries, countryName) {
   return block;
 }
 
+function setCountrySectionExpanded(section, expanded) {
+  const body = section.querySelector(".country-body");
+  const buttons = section.querySelectorAll(".collapse-button");
+  const countryName = section.dataset.country;
+  const action = expanded ? "Collapse" : "Expand";
+
+  body.hidden = !expanded;
+  body.style.display = expanded ? "" : "none";
+  body.setAttribute("aria-hidden", String(!expanded));
+  section.classList.toggle("is-collapsed", !expanded);
+
+  buttons.forEach((button) => {
+    button.setAttribute("aria-expanded", String(expanded));
+    button.setAttribute("aria-label", `${action} ${countryName} resources`);
+    button.textContent = button.classList.contains("collapse-button-bottom") ? `${action} ${countryName}` : action;
+  });
+}
+
 function createCountrySection(countryData, categoryKey = "all", query = "") {
   const section = makeElement("article", "country-card");
   section.dataset.country = countryData.country;
@@ -161,18 +180,7 @@ function createCountrySection(countryData, categoryKey = "all", query = "") {
     }
   });
 
-  const setExpanded = (expanded) => {
-    body.hidden = !expanded;
-    body.style.display = expanded ? "" : "none";
-    body.setAttribute("aria-hidden", String(!expanded));
-    section.classList.toggle("is-collapsed", !expanded);
-
-    [toggle, bottomToggle].forEach((button) => {
-      button.setAttribute("aria-expanded", String(expanded));
-      button.setAttribute("aria-label", `${expanded ? "Collapse" : "Expand"} ${countryData.country} resources`);
-      button.textContent = expanded ? "Collapse" : "Expand";
-    });
-  };
+  const setExpanded = (expanded) => setCountrySectionExpanded(section, expanded);
 
   [toggle, bottomToggle].forEach((button) => {
     button.addEventListener("click", () => {
@@ -187,6 +195,7 @@ function createCountrySection(countryData, categoryKey = "all", query = "") {
 
   content.append(titleRow, intro, body, bottomToggle);
   section.append(header, content);
+  setExpanded(true);
   return { element: section, entryCount: body.querySelectorAll(".entry-card").length };
 }
 
@@ -254,6 +263,14 @@ function resetAllFilters() {
   searchInput.focus();
 }
 
+function setAllCountriesExpanded(expanded) {
+  document.querySelectorAll(".country-card").forEach((section) => setCountrySectionExpanded(section, expanded));
+
+  if (!expanded) {
+    countriesContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
 function updateBackToTop() {
   backToTop.classList.toggle("is-visible", window.scrollY > 420);
 }
@@ -265,6 +282,11 @@ searchInput.addEventListener("input", applyFilters);
 countryFilter.addEventListener("change", applyFilters);
 categoryFilter.addEventListener("change", applyFilters);
 resetFilters.addEventListener("click", resetAllFilters);
+displayControls.forEach((button) => {
+  button.addEventListener("click", () => {
+    setAllCountriesExpanded(button.dataset.displayControl === "expand");
+  });
+});
 
 backToTop.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });

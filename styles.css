@@ -223,6 +223,22 @@ button:focus-visible,
   border-color: var(--teal);
 }
 
+.control-actions,
+.list-actions {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.control-actions {
+  align-items: end;
+}
+
+.control-actions .ghost-button,
+.list-actions .ghost-button {
+  white-space: nowrap;
+}
+
 .ghost-button,
 .collapse-button,
 .visit-button {
@@ -262,6 +278,11 @@ button:focus-visible,
 .countries-grid {
   display: grid;
   gap: 1.25rem;
+  margin: 0 0 1rem;
+}
+
+.list-actions {
+  justify-content: flex-end;
   margin: 0 0 2rem;
 }
 
