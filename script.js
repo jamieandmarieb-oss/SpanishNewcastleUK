@@ -163,6 +163,8 @@ function createCountrySection(countryData, categoryKey = "all", query = "") {
 
   const setExpanded = (expanded) => {
     body.hidden = !expanded;
+    body.style.display = expanded ? "" : "none";
+    body.setAttribute("aria-hidden", String(!expanded));
     section.classList.toggle("is-collapsed", !expanded);
 
     [toggle, bottomToggle].forEach((button) => {
