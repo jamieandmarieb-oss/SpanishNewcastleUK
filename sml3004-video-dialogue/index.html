@@ -303,7 +303,7 @@
         This video dialogue program asks the placement-status and year-so-far prompts aloud, one at a time, records your spoken reflection, and lets you download the recording as a video file.
       </p>
       <p>
-        The questions are not shown on screen. Start recording, then let the tutor voice guide the dialogue. The game will move to the next prompt after your answer, or you can select Answer finished.
+        The questions are not shown on screen. Start recording, then let the tutor voice guide the dialogue. The program will move to the next prompt after your answer, or you can select Answer finished.
       </p>
     </section>
 
@@ -847,7 +847,7 @@
 
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
         setupBtn.disabled = true;
-        setStatus("This browser does not support the camera/video recording features needed for this game.", "bad");
+        setStatus("This browser does not support the camera/video recording features needed for this program.", "bad");
       }
 
       populateVoices();
