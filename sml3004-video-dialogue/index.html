@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SML3004 Step 1 and Step 2 Video Dialogue</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #526070;
+      --line: #d9e1ec;
+      --soft: #f6f8fb;
+      --panel: #ffffff;
+      --brand: #215a8f;
+      --brand-dark: #153f67;
+      --good: #157347;
+      --warn: #9a5a00;
+      --bad: #b42318;
+    }
+
+    .video-dialogue-game {
+      max-width: 980px;
+      margin: 24px auto;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+      box-sizing: border-box;
+    }
+
+    .video-dialogue-game * {
+      box-sizing: border-box;
+    }
+
+    .video-dialogue-game h1,
+    .video-dialogue-game h2,
+    .video-dialogue-game p {
+      margin-top: 0;
+    }
+
+    .video-dialogue-game h1 {
+      margin-bottom: 8px;
+      font-size: 1.65rem;
+      line-height: 1.2;
+    }
+
+    .video-dialogue-game h2 {
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+      line-height: 1.25;
+    }
+
+    .video-dialogue-game p,
+    .video-dialogue-game li {
+      color: var(--muted);
+      line-height: 1.48;
+    }
+
+    .intro-panel,
+    .recording-panel,
+    .question-panel,
+    .output-panel,
+    .finish-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+    }
+
+    .intro-panel {
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .recording-panel,
+    .question-panel,
+    .output-panel,
+    .finish-panel {
+      padding: 16px;
+    }
+
+    .recording-panel {
+      background: #ffffff;
+    }
+
+    .camera-wrap {
+      overflow: hidden;
+      border: 1px solid #c5d0dc;
+      border-radius: 8px;
+      background: #111827;
+      aspect-ratio: 16 / 9;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #111827;
+    }
+
+    .question-panel {
+      position: sticky;
+      top: 12px;
+    }
+
+    .step-label {
+      margin-bottom: 8px;
+      color: var(--brand-dark);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .question-text {
+      padding: 12px;
+      border-left: 4px solid var(--brand);
+      background: #eef5fb;
+      color: #27435f;
+      line-height: 1.5;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .controls button,
+    .download-link {
+      min-height: 42px;
+      padding: 9px 14px;
+      border: 1px solid var(--brand);
+      border-radius: 7px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .primary-btn,
+    .download-link {
+      background: var(--brand);
+      color: #ffffff;
+    }
+
+    .secondary-btn {
+      background: #ffffff;
+      color: var(--brand);
+    }
+
+    .danger-btn {
+      border-color: var(--bad);
+      background: #ffffff;
+      color: var(--bad);
+    }
+
+    button:disabled,
+    .download-link[aria-disabled="true"] {
+      border-color: #c7d1dc;
+      color: #8190a0;
+      background: #ffffff;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    button:focus,
+    select:focus,
+    textarea:focus,
+    .download-link:focus {
+      outline: 3px solid rgba(106, 155, 210, 0.42);
+      outline-offset: 2px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #b9c6d4;
+      border-radius: 7px;
+      font: inherit;
+      color: var(--ink);
+      background: #ffffff;
+    }
+
+    select {
+      min-height: 42px;
+      padding: 8px 10px;
+    }
+
+    textarea {
+      min-height: 130px;
+      padding: 10px;
+      resize: vertical;
+    }
+
+    .status-line {
+      min-height: 24px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .status-line.good {
+      color: var(--good);
+    }
+
+    .status-line.warn {
+      color: var(--warn);
+    }
+
+    .status-line.bad {
+      color: var(--bad);
+    }
+
+    .timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .recording-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #9ca3af;
+    }
+
+    .is-recording .recording-dot {
+      background: var(--bad);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.35; }
+      50% { opacity: 1; }
+    }
+
+    .output-panel,
+    .finish-panel {
+      margin-top: 16px;
+    }
+
+    .finish-panel[hidden],
+    .output-panel[hidden] {
+      display: none;
+    }
+
+    .finish-panel {
+      border-color: #b7dcc8;
+      background: #f0fbf5;
+    }
+
+    .finish-panel h2 {
+      color: #0f5132;
+    }
+
+    @media (max-width: 820px) {
+      .video-dialogue-game {
+        margin: 12px;
+        padding: 16px;
+      }
+
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .question-panel {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="video-dialogue-game" id="videoDialogueGame">
+    <section class="intro-panel">
+      <h1>Welcome to SML3004 Year Abroad Tutor Posts</h1>
+      <p>
+        This video dialogue game asks the placement-status and year-so-far prompts aloud, one at a time, records your spoken reflection, and lets you download the recording as a video file.
+      </p>
+      <p>
+        The questions are not shown on screen. Start recording, then let the tutor voice guide the dialogue. The game will move to the next prompt after your answer, or you can select Answer finished.
+      </p>
+    </section>
+
+    <div class="main-grid">
+      <section class="recording-panel" aria-labelledby="recordingHeading">
+        <h2 id="recordingHeading">Video Recorder</h2>
+        <div class="camera-wrap">
+          <video id="cameraPreview" playsinline muted></video>
+        </div>
+
+        <div class="timer" id="timerBadge">
+          <span class="recording-dot" aria-hidden="true"></span>
+          <span id="timerText">00:00</span>
+        </div>
+
+        <p class="status-line" id="statusLine">Camera and microphone are not active yet.</p>
+
+        <div class="controls">
+          <button class="primary-btn" id="setupBtn" type="button">Set up camera</button>
+          <button class="primary-btn" id="startBtn" type="button" disabled>Start recording</button>
+          <button class="secondary-btn" id="askBtn" type="button" disabled>Ask first question</button>
+          <button class="secondary-btn" id="repeatQuestionBtn" type="button" disabled>Repeat question</button>
+          <button class="secondary-btn" id="answerDoneBtn" type="button" disabled>Answer finished</button>
+          <button class="danger-btn" id="stopBtn" type="button" disabled>Stop recording</button>
+        </div>
+      </section>
+
+      <aside class="question-panel" aria-labelledby="questionHeading">
+        <h2 id="questionHeading">Placement status</h2>
+        <p class="question-text" id="questionProgress">
+          Ready to begin. The questions will be asked aloud only.
+        </p>
+
+        <label class="field" for="voiceSelect">
+          Voice
+          <select id="voiceSelect">
+            <option value="">Loading voices...</option>
+          </select>
+        </label>
+      </aside>
+    </div>
+
+    <section class="output-panel" id="outputPanel" hidden aria-labelledby="outputHeading">
+      <h2 id="outputHeading">Recording Preview</h2>
+      <p>Your recording is ready. Preview it below, then download the video.</p>
+      <div class="camera-wrap">
+        <video id="recordedVideo" controls></video>
+      </div>
+      <div class="controls">
+        <a class="download-link" id="downloadLink" href="#" download="sml3004-step-1-step-2-video-dialogue.webm" aria-disabled="true">Download video</a>
+        <button class="secondary-btn" id="newRecordingBtn" type="button">Record again</button>
+      </div>
+    </section>
+
+    <section class="finish-panel" id="finishPanel" hidden aria-labelledby="finishHeading">
+      <h2 id="finishHeading">Thank you</h2>
+      <p>Thank you for completing your SML3004 video dialogue. Your dialogue is finished, and your video is ready to download.</p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const game = document.getElementById("videoDialogueGame");
+      const cameraPreview = document.getElementById("cameraPreview");
+      const recordedVideo = document.getElementById("recordedVideo");
+      const setupBtn = document.getElementById("setupBtn");
+      const startBtn = document.getElementById("startBtn");
+      const askBtn = document.getElementById("askBtn");
+      const repeatQuestionBtn = document.getElementById("repeatQuestionBtn");
+      const answerDoneBtn = document.getElementById("answerDoneBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      const newRecordingBtn = document.getElementById("newRecordingBtn");
+      const statusLine = document.getElementById("statusLine");
+      const timerText = document.getElementById("timerText");
+      const timerBadge = document.getElementById("timerBadge");
+      const questionHeading = document.getElementById("questionHeading");
+      const questionProgress = document.getElementById("questionProgress");
+      const voiceSelect = document.getElementById("voiceSelect");
+      const outputPanel = document.getElementById("outputPanel");
+      const finishPanel = document.getElementById("finishPanel");
+      const downloadLink = document.getElementById("downloadLink");
+
+      const questions = [
+        {
+          title: "Introduction",
+          prompt: "What's your name?"
+        },
+        {
+          title: "The year so far",
+          prompt: "How are you feeling about the whole Year Abroad thing this year?"
+        },
+        {
+          title: "Language and study skills",
+          prompt: "How confident do you feel about your language skills at the moment?"
+        },
+        {
+          title: "Language and study skills",
+          prompt: "What steps have you been able to take to maintain and improve your language skills in the year so far?"
+        },
+        {
+          title: "Language and study skills",
+          prompt: "Has it worked? Why, or why not?"
+        },
+        {
+          title: "Language and study skills",
+          prompt: "What language-related skills do you need to focus on right now, and how are you planning to do this?"
+        },
+        {
+          title: "Your employability skills",
+          prompt: "Your Year Abroad is a fantastic opportunity to further develop many of the skills and attributes sought by graduate recruiters, whatever your aspirations. Taking time now to reflect on how you are developing these should help prepare you for career decisions in your final year."
+        },
+        {
+          title: "Your employability skills",
+          prompt: "Thinking about what you have thought about above, can you illustrate and reflect upon how these experiences have helped you enhance adaptability and problem-solving?"
+        },
+        {
+          title: "Your employability skills",
+          prompt: "Can you illustrate and reflect upon how these experiences have helped you enhance intercultural awareness?"
+        },
+        {
+          title: "Your employability skills",
+          prompt: "Can you illustrate and reflect upon how these experiences have helped you enhance negotiating?"
+        },
+        {
+          title: "Your employability skills",
+          prompt: "Can you illustrate and reflect upon how these experiences have helped you enhance resilience and drive?"
+        },
+        {
+          title: "Your employability skills",
+          prompt: "Which other skills from the Graduate Framework have you developed so far in your Year Abroad, and why?"
+        },
+        {
+          title: "Your employability skills",
+          prompt: "How could you further enhance these skills whilst setting goals?"
+        },
+        {
+          title: "Goals",
+          prompt: "What are your four key goals for the next three months?"
+        },
+        {
+          title: "Goals",
+          prompt: "These goals may be linguistic, academic, professional, extra-curricular, personal, or another relevant area. How will you make sure they are achievable and realistic?"
+        },
+        {
+          title: "Questions",
+          prompt: "Finally, is there anything you would like to ask, report to your Personal Tutor, or discuss with them?"
+        },
+        {
+          title: "Questions",
+          prompt: "Please note that all urgent or serious personal matters should be reported at once to the Year Abroad team by email or phone. The purpose of this Tutor Post is to discuss more general and not-so-urgent issues."
+        },
+        {
+          title: "Thank you",
+          prompt: "Thank you for completing your SML3004 video dialogue. Your dialogue is finished, and your video is ready to download."
+        }
+      ];
+
+      let mediaStream = null;
+      let mediaRecorder = null;
+      let recordedChunks = [];
+      let recordingStartedAt = 0;
+      let timerId = 0;
+      let voices = [];
+      let currentQuestionIndex = 0;
+      let recognition = null;
+      let recognitionActive = false;
+      let silenceTimer = 0;
+      let dialogueEntries = [];
+      let currentAnswer = "";
+      let hasCurrentPromptBeenAsked = false;
+
+      function setStatus(message, kind) {
+        statusLine.textContent = message;
+        statusLine.className = "status-line" + (kind ? " " + kind : "");
+      }
+
+      function formatTime(ms) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+        const seconds = String(totalSeconds % 60).padStart(2, "0");
+        return minutes + ":" + seconds;
+      }
+
+      function startTimer() {
+        recordingStartedAt = Date.now();
+        timerBadge.classList.add("is-recording");
+        timerText.textContent = "00:00";
+        timerId = window.setInterval(function () {
+          timerText.textContent = formatTime(Date.now() - recordingStartedAt);
+        }, 500);
+      }
+
+      function stopTimer() {
+        window.clearInterval(timerId);
+        timerBadge.classList.remove("is-recording");
+      }
+
+      function updateQuestionProgress(message) {
+        const currentQuestion = questions[currentQuestionIndex] || questions[questions.length - 1];
+        questionHeading.textContent = currentQuestion.title;
+        const base = Math.min(currentQuestionIndex + 1, questions.length) + "/" + questions.length;
+        questionProgress.textContent = message ? base + ". " + message : base + ". Listen to the spoken prompt.";
+        updateNavigationButtons();
+      }
+
+      function updateNavigationButtons() {
+        const isRecording = mediaRecorder && mediaRecorder.state === "recording";
+        repeatQuestionBtn.disabled = !isRecording || !hasCurrentPromptBeenAsked;
+      }
+
+      function choosePreferredVoice(list) {
+        const preferredNames = [
+          "Google UK English Female",
+          "Serena",
+          "Samantha",
+          "Victoria",
+          "Karen",
+          "Moira",
+          "Tessa",
+          "Zira",
+          "Hazel"
+        ];
+
+        for (const name of preferredNames) {
+          const match = list.find(function (voice) {
+            return voice.name.toLowerCase().includes(name.toLowerCase());
+          });
+          if (match) return match;
+        }
+
+        return list.find(function (voice) {
+          const label = (voice.name + " " + voice.lang).toLowerCase();
+          return label.includes("female") && label.startsWith("en");
+        }) || list.find(function (voice) {
+          return /^en[-_]/i.test(voice.lang);
+        }) || list[0];
+      }
+
+      function populateVoices() {
+        voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+        voiceSelect.innerHTML = "";
+
+        if (!voices.length) {
+          const option = document.createElement("option");
+          option.value = "";
+          option.textContent = "Default browser voice";
+          voiceSelect.append(option);
+          return;
+        }
+
+        voices.forEach(function (voice, index) {
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = voice.name + " (" + voice.lang + ")";
+          voiceSelect.append(option);
+        });
+
+        const preferred = choosePreferredVoice(voices);
+        const preferredIndex = voices.indexOf(preferred);
+        if (preferredIndex >= 0) voiceSelect.value = String(preferredIndex);
+      }
+
+      function getSpeechRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) return null;
+
+        const instance = new SpeechRecognition();
+        instance.lang = "en-GB";
+        instance.continuous = true;
+        instance.interimResults = true;
+
+        instance.onresult = function (event) {
+          let transcript = "";
+          for (let index = event.resultIndex; index < event.results.length; index += 1) {
+            transcript += event.results[index][0].transcript;
+          }
+          currentAnswer = transcript.trim();
+          updateQuestionProgress("Listening to your answer.");
+          window.clearTimeout(silenceTimer);
+          silenceTimer = window.setTimeout(function () {
+            completeCurrentAnswer("pause");
+          }, 2800);
+        };
+
+        instance.onerror = function () {
+          recognitionActive = false;
+          answerDoneBtn.disabled = false;
+          setStatus("Speech recognition paused. Select Answer finished when you are ready for the next question.", "warn");
+        };
+
+        instance.onend = function () {
+          recognitionActive = false;
+        };
+
+        return instance;
+      }
+
+      function startListeningForAnswer() {
+        currentAnswer = "";
+        answerDoneBtn.disabled = false;
+
+        if (!recognition) {
+          recognition = getSpeechRecognition();
+        }
+
+        if (!recognition) {
+          setStatus("Answer now. Select Answer finished when you are ready for the next question.", "good");
+          return;
+        }
+
+        try {
+          recognition.start();
+          recognitionActive = true;
+          setStatus("Listening. The game will move on after a short pause, or you can select Answer finished.", "good");
+          updateQuestionProgress("Listening to your answer.");
+        } catch (error) {
+          setStatus("Listening is already active. Continue answering or select Answer finished.", "warn");
+        }
+      }
+
+      function stopListening() {
+        window.clearTimeout(silenceTimer);
+        if (recognition && recognitionActive) {
+          recognition.stop();
+        }
+        recognitionActive = false;
+      }
+
+      function completeCurrentAnswer(reason) {
+        stopListening();
+        answerDoneBtn.disabled = true;
+
+        dialogueEntries[currentQuestionIndex] = {
+          answer: currentAnswer || "[Recorded on video]"
+        };
+
+        if (currentQuestionIndex < questions.length - 1) {
+          currentQuestionIndex += 1;
+          hasCurrentPromptBeenAsked = false;
+          askBtn.disabled = false;
+          askBtn.textContent = "Ask next question";
+          updateQuestionProgress(reason === "pause" ? "Answer received. Ready for the next spoken prompt." : "Ready for the next spoken prompt.");
+          setStatus("Answer received. Select Ask next question.", "good");
+        } else {
+          askBtn.disabled = true;
+          updateQuestionProgress("All questions have been asked. Stop recording when you are finished.");
+          setStatus("All questions are complete. Stop recording to prepare the download.", "good");
+        }
+      }
+
+      function speakQuestion() {
+        if (!window.speechSynthesis) {
+          setStatus("This browser does not support speech synthesis. Select Answer finished to move through the recording manually.", "warn");
+          startListeningForAnswer();
+          return;
+        }
+
+        askBtn.disabled = true;
+        repeatQuestionBtn.disabled = true;
+        answerDoneBtn.disabled = true;
+        window.speechSynthesis.cancel();
+        updateQuestionProgress("Tutor is asking the prompt aloud.");
+        const currentQuestion = questions[currentQuestionIndex];
+        const utterance = new SpeechSynthesisUtterance(currentQuestion.prompt);
+        const selectedVoice = voices[Number(voiceSelect.value)];
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.lang = selectedVoice ? selectedVoice.lang : "en-GB";
+        utterance.rate = 0.92;
+        utterance.pitch = 1.04;
+
+        utterance.onstart = function () {
+          hasCurrentPromptBeenAsked = true;
+          setStatus("The tutor is speaking. Answer after the voice finishes.", "good");
+        };
+
+        utterance.onend = function () {
+          if (currentQuestion.title === "Thank you") {
+            askBtn.disabled = true;
+            answerDoneBtn.disabled = true;
+            updateQuestionProgress("The dialogue is complete. Stop recording to prepare the download.");
+            setStatus("Thank you. Stop recording to prepare the download.", "good");
+          } else {
+            startListeningForAnswer();
+          }
+        };
+
+        window.speechSynthesis.speak(utterance);
+      }
+
+      function repeatCurrentQuestion() {
+        if (!(mediaRecorder && mediaRecorder.state === "recording")) return;
+        if (!hasCurrentPromptBeenAsked) return;
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        stopListening();
+        currentAnswer = "";
+        answerDoneBtn.disabled = true;
+        askBtn.disabled = true;
+        setStatus("Repeating the current question.", "good");
+        speakQuestion();
+      }
+
+      async function setupCamera() {
+        try {
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: {
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              facingMode: "user"
+            }
+          });
+          cameraPreview.srcObject = mediaStream;
+          await cameraPreview.play();
+          setupBtn.disabled = true;
+          startBtn.disabled = false;
+          setStatus("Camera and microphone are ready.", "good");
+        } catch (error) {
+          setStatus("Camera or microphone access was not granted. Check browser permissions and try again.", "bad");
+        }
+      }
+
+      function getSupportedMimeType() {
+        const candidates = [
+          "video/webm;codecs=vp9,opus",
+          "video/webm;codecs=vp8,opus",
+          "video/webm"
+        ];
+
+        return candidates.find(function (type) {
+          return window.MediaRecorder && MediaRecorder.isTypeSupported(type);
+        }) || "";
+      }
+
+      function startRecording() {
+        if (!mediaStream) {
+          setStatus("Set up the camera and microphone first.", "warn");
+          return;
+        }
+
+        recordedChunks = [];
+        const mimeType = getSupportedMimeType();
+        mediaRecorder = new MediaRecorder(mediaStream, mimeType ? { mimeType: mimeType } : undefined);
+
+        mediaRecorder.addEventListener("dataavailable", function (event) {
+          if (event.data && event.data.size > 0) recordedChunks.push(event.data);
+        });
+
+        mediaRecorder.addEventListener("stop", function () {
+          const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || "video/webm" });
+          const url = URL.createObjectURL(blob);
+          recordedVideo.src = url;
+          downloadLink.href = url;
+          downloadLink.setAttribute("download", "sml3004-step-1-step-2-video-dialogue.webm");
+          downloadLink.removeAttribute("aria-disabled");
+          outputPanel.hidden = false;
+          finishPanel.hidden = false;
+          setStatus("Recording complete. Preview or download your video.", "good");
+          outputPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        mediaRecorder.start();
+        startTimer();
+        startBtn.disabled = true;
+        askBtn.disabled = false;
+        repeatQuestionBtn.disabled = true;
+        answerDoneBtn.disabled = true;
+        stopBtn.disabled = false;
+        setupBtn.disabled = true;
+        outputPanel.hidden = true;
+        finishPanel.hidden = true;
+        downloadLink.setAttribute("aria-disabled", "true");
+        currentQuestionIndex = 0;
+        hasCurrentPromptBeenAsked = false;
+        dialogueEntries = [];
+        updateQuestionProgress("Select Ask first question.");
+        askBtn.textContent = "Ask first question";
+        setStatus("Recording started. Select Ask first question, then answer on camera.", "good");
+      }
+
+      function stopRecording() {
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        stopListening();
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          mediaRecorder.stop();
+        }
+        stopTimer();
+        startBtn.disabled = false;
+        askBtn.disabled = true;
+        repeatQuestionBtn.disabled = true;
+        answerDoneBtn.disabled = true;
+        stopBtn.disabled = true;
+      }
+
+      function resetForNewRecording() {
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        stopListening();
+        recordedChunks = [];
+        currentQuestionIndex = 0;
+        hasCurrentPromptBeenAsked = false;
+        dialogueEntries = [];
+        currentAnswer = "";
+        recordedVideo.removeAttribute("src");
+        recordedVideo.load();
+        downloadLink.href = "#";
+        downloadLink.setAttribute("aria-disabled", "true");
+        outputPanel.hidden = true;
+        finishPanel.hidden = true;
+        startBtn.disabled = !mediaStream;
+        askBtn.disabled = true;
+        repeatQuestionBtn.disabled = true;
+        answerDoneBtn.disabled = true;
+        stopBtn.disabled = true;
+        timerText.textContent = "00:00";
+        askBtn.textContent = "Ask first question";
+        updateQuestionProgress("Ready to begin. The questions will be asked aloud only.");
+        setStatus(mediaStream ? "Ready for a new recording." : "Camera and microphone are not active yet.", mediaStream ? "good" : "");
+      }
+
+      setupBtn.addEventListener("click", setupCamera);
+      startBtn.addEventListener("click", startRecording);
+      askBtn.addEventListener("click", speakQuestion);
+      repeatQuestionBtn.addEventListener("click", repeatCurrentQuestion);
+      answerDoneBtn.addEventListener("click", function () {
+        completeCurrentAnswer("manual");
+      });
+      stopBtn.addEventListener("click", stopRecording);
+      newRecordingBtn.addEventListener("click", resetForNewRecording);
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+        setupBtn.disabled = true;
+        setStatus("This browser does not support the camera/video recording features needed for this game.", "bad");
+      }
+
+      populateVoices();
+      if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = populateVoices;
+      }
+      updateQuestionProgress("Ready to begin. The questions will be asked aloud only.");
+    })();
+  </script>
+</body>
+</html>
