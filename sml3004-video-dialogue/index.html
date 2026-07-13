@@ -303,7 +303,7 @@
         This video dialogue program asks the placement-status and year-so-far prompts aloud, one at a time, records your spoken reflection, and lets you download the recording as a video file.
       </p>
       <p>
-        The questions are not shown on screen. Start recording, then let the tutor voice guide the dialogue. The program will move to the next prompt after your answer, or you can select Answer finished.
+        The questions are not shown on screen. Start recording, then let the tutor voice guide the dialogue. The program will move to the next prompt after your answer, or you can select Answer finished/Pause.
       </p>
     </section>
 
@@ -326,7 +326,7 @@
           <button class="primary-btn" id="startBtn" type="button" disabled>Start recording</button>
           <button class="secondary-btn" id="askBtn" type="button" disabled>Ask first question</button>
           <button class="secondary-btn" id="repeatQuestionBtn" type="button" disabled>Repeat question</button>
-          <button class="secondary-btn" id="answerDoneBtn" type="button" disabled>Answer finished</button>
+          <button class="secondary-btn" id="answerDoneBtn" type="button" disabled>Answer finished/Pause</button>
           <button class="danger-btn" id="stopBtn" type="button" disabled>Stop recording</button>
         </div>
       </section>
@@ -591,7 +591,7 @@
         instance.onerror = function () {
           recognitionActive = false;
           answerDoneBtn.disabled = false;
-          setStatus("Speech recognition paused. Select Answer finished when you are ready for the next question.", "warn");
+          setStatus("Speech recognition paused. Select Answer finished/Pause when you are ready for the next question.", "warn");
         };
 
         instance.onend = function () {
@@ -610,17 +610,17 @@
         }
 
         if (!recognition) {
-          setStatus("Answer now. Select Answer finished when you are ready for the next question.", "good");
+          setStatus("Answer now. Select Answer finished/Pause when you are ready for the next question.", "good");
           return;
         }
 
         try {
           recognition.start();
           recognitionActive = true;
-          setStatus("Listening. The program will move on after a short pause, or you can select Answer finished.", "good");
+          setStatus("Listening. The program will move on after a short pause, or you can select Answer finished/Pause.", "good");
           updateQuestionProgress("Listening to your answer.");
         } catch (error) {
-          setStatus("Listening is already active. Continue answering or select Answer finished.", "warn");
+          setStatus("Listening is already active. Continue answering or select Answer finished/Pause.", "warn");
         }
       }
 
@@ -668,7 +668,7 @@
 
       function speakQuestion() {
         if (!window.speechSynthesis) {
-          setStatus("This browser does not support speech synthesis. Select Answer finished to move through the recording manually.", "warn");
+          setStatus("This browser does not support speech synthesis. Select Answer finished/Pause to move through the recording manually.", "warn");
           startListeningForAnswer();
           return;
         }
