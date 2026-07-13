@@ -632,6 +632,18 @@
         recognitionActive = false;
       }
 
+      function stopCamera() {
+        if (mediaStream) {
+          mediaStream.getTracks().forEach(function (track) {
+            track.stop();
+          });
+          mediaStream = null;
+        }
+        cameraPreview.pause();
+        cameraPreview.srcObject = null;
+        setupBtn.disabled = false;
+      }
+
       function completeCurrentAnswer(reason) {
         stopListening();
         answerDoneBtn.disabled = true;
@@ -789,6 +801,7 @@
         if (mediaRecorder && mediaRecorder.state !== "inactive") {
           mediaRecorder.stop();
         }
+        stopCamera();
         stopTimer();
         startBtn.disabled = false;
         askBtn.disabled = true;
