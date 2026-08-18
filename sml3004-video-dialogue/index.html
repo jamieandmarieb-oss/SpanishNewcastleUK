@@ -386,7 +386,6 @@
 
   <script>
     (function () {
-      const game = document.getElementById("videoDialogueGame");
       const cameraPreview = document.getElementById("cameraPreview");
       const recordedVideo = document.getElementById("recordedVideo");
       const setupBtn = document.getElementById("setupBtn");
@@ -408,74 +407,23 @@
       const downloadLink = document.getElementById("downloadLink");
 
       const questions = [
-        {
-          title: "Introduction",
-          prompt: "What's your name?"
-        },
-        {
-          title: "The year so far",
-          prompt: "How are you feeling about the whole Year Abroad thing this year?"
-        },
-        {
-          title: "Language and study skills",
-          prompt: "How confident do you feel about your language skills at the moment?"
-        },
-        {
-          title: "Language and study skills",
-          prompt: "What steps have you been able to take to maintain and improve your language skills in the year so far?"
-        },
-        {
-          title: "Language and study skills",
-          prompt: "Has it worked? Why, or why not?"
-        },
-        {
-          title: "Language and study skills",
-          prompt: "What language-related skills do you need to focus on right now, and how are you planning to do this?"
-        },
-        {
-          title: "Your employability skills",
-          prompt: "Your Year Abroad is a fantastic opportunity to further develop many of the skills and attributes sought by graduate recruiters, whatever your aspirations. Taking time now to reflect on how you are developing these should help prepare you for career decisions in your final year."
-        },
-        {
-          title: "Your employability skills",
-          prompt: "Thinking about what you have thought about above, can you illustrate and reflect upon how these experiences have helped you enhance adaptability and problem-solving?"
-        },
-        {
-          title: "Your employability skills",
-          prompt: "Can you illustrate and reflect upon how these experiences have helped you enhance intercultural awareness?"
-        },
-        {
-          title: "Your employability skills",
-          prompt: "Can you illustrate and reflect upon how these experiences have helped you enhance negotiating?"
-        },
-        {
-          title: "Your employability skills",
-          prompt: "Can you illustrate and reflect upon how these experiences have helped you enhance resilience and drive?"
-        },
-        {
-          title: "Your employability skills",
-          prompt: "Which other skills from the Graduate Framework have you developed so far in your Year Abroad, and why?"
-        },
-        {
-          title: "Your employability skills",
-          prompt: "How could you further enhance these skills whilst setting goals?"
-        },
-        {
-          title: "Goals",
-          prompt: "What are your four key goals for the next three months?"
-        },
-        {
-          title: "Goals",
-          prompt: "These goals may be linguistic, academic, professional, extra-curricular, personal, or another relevant area. How will you make sure they are achievable and realistic?"
-        },
-        {
-          title: "Questions",
-          prompt: "Finally, is there anything you would like to ask, report to your Personal Tutor, or discuss with them?"
-        },
-        {
-          title: "Thank you",
-          prompt: "Thank you for completing your SML3004 video dialogue. Your dialogue is finished, and your video is ready to download."
-        }
+        { title: "Introduction", prompt: "What's your name?" },
+        { title: "The year so far", prompt: "How are you feeling about the whole Year Abroad thing this year?" },
+        { title: "Language and study skills", prompt: "How confident do you feel about your language skills at the moment?" },
+        { title: "Language and study skills", prompt: "What steps have you been able to take to maintain and improve your language skills in the year so far?" },
+        { title: "Language and study skills", prompt: "Has it worked? Why, or why not?" },
+        { title: "Language and study skills", prompt: "What language-related skills do you need to focus on right now, and how are you planning to do this?" },
+        { title: "Your employability skills", prompt: "Your Year Abroad is a fantastic opportunity to further develop many of the skills and attributes sought by graduate recruiters, whatever your aspirations. Taking time now to reflect on how you are developing these should help prepare you for career decisions in your final year." },
+        { title: "Your employability skills", prompt: "Thinking about what you have thought about above, can you illustrate and reflect upon how these experiences have helped you enhance adaptability and problem-solving?" },
+        { title: "Your employability skills", prompt: "Can you illustrate and reflect upon how these experiences have helped you enhance intercultural awareness?" },
+        { title: "Your employability skills", prompt: "Can you illustrate and reflect upon how these experiences have helped you enhance negotiating?" },
+        { title: "Your employability skills", prompt: "Can you illustrate and reflect upon how these experiences have helped you enhance resilience and drive?" },
+        { title: "Your employability skills", prompt: "Which other skills from the Graduate Framework have you developed so far in your Year Abroad, and why?" },
+        { title: "Your employability skills", prompt: "How could you further enhance these skills whilst setting goals?" },
+        { title: "Goals", prompt: "What are your four key goals for the next three months?" },
+        { title: "Goals", prompt: "These goals may be linguistic, academic, professional, extra-curricular, personal, or another relevant area. How will you make sure they are achievable and realistic?" },
+        { title: "Questions", prompt: "Finally, is there anything you would like to ask, report to your Personal Tutor, or discuss with them?" },
+        { title: "Thank you", prompt: "Thank you for completing your SML3004 video dialogue. Your dialogue is finished, and your video is ready to download." }
       ];
 
       let mediaStream = null;
@@ -488,7 +436,6 @@
       let recognition = null;
       let recognitionActive = false;
       let silenceTimer = 0;
-      let dialogueEntries = [];
       let currentAnswer = "";
       let hasCurrentPromptBeenAsked = false;
 
@@ -521,6 +468,7 @@
       function updateQuestionProgress(message) {
         const currentQuestion = questions[currentQuestionIndex] || questions[questions.length - 1];
         questionHeading.textContent = currentQuestion.title;
+        questionDisplay.textContent = currentQuestion.prompt;
         const base = Math.min(currentQuestionIndex + 1, questions.length) + "/" + questions.length;
         questionProgress.textContent = message ? base + ". " + message : base + ". Listen to the spoken prompt.";
         updateNavigationButtons();
@@ -532,29 +480,14 @@
       }
 
       function choosePreferredVoice(list) {
-        const preferredNames = [
-          "Google UK English Female",
-          "Serena",
-          "Samantha",
-          "Victoria",
-          "Karen",
-          "Moira",
-          "Tessa",
-          "Zira",
-          "Hazel"
-        ];
-
+        const preferredNames = ["Google UK English Female", "Serena", "Samantha", "Victoria", "Karen", "Moira", "Tessa", "Zira", "Hazel"];
         for (const name of preferredNames) {
           const match = list.find(function (voice) {
             return voice.name.toLowerCase().includes(name.toLowerCase());
           });
           if (match) return match;
         }
-
         return list.find(function (voice) {
-          const label = (voice.name + " " + voice.lang).toLowerCase();
-          return label.includes("female") && label.startsWith("en");
-        }) || list.find(function (voice) {
           return /^en[-_]/i.test(voice.lang);
         }) || list[0];
       }
@@ -562,7 +495,6 @@
       function populateVoices() {
         voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
         voiceSelect.innerHTML = "";
-
         if (!voices.length) {
           const option = document.createElement("option");
           option.value = "";
@@ -570,14 +502,12 @@
           voiceSelect.append(option);
           return;
         }
-
         voices.forEach(function (voice, index) {
           const option = document.createElement("option");
           option.value = String(index);
           option.textContent = voice.name + " (" + voice.lang + ")";
           voiceSelect.append(option);
         });
-
         const preferred = choosePreferredVoice(voices);
         const preferredIndex = voices.indexOf(preferred);
         if (preferredIndex >= 0) voiceSelect.value = String(preferredIndex);
@@ -586,49 +516,35 @@
       function getSpeechRecognition() {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) return null;
-
         const instance = new SpeechRecognition();
         instance.lang = "en-GB";
         instance.continuous = true;
         instance.interimResults = true;
-
         instance.onresult = function (event) {
           let transcript = "";
-          for (let index = event.resultIndex; index < event.results.length; index += 1) {
-            transcript += event.results[index][0].transcript;
-          }
+          for (let index = event.resultIndex; index < event.results.length; index += 1) transcript += event.results[index][0].transcript;
           currentAnswer = transcript.trim();
           updateQuestionProgress("Listening to your answer.");
           window.clearTimeout(silenceTimer);
-          silenceTimer = window.setTimeout(function () {
-            completeCurrentAnswer("pause");
-          }, 2800);
+          silenceTimer = window.setTimeout(function () { completeCurrentAnswer("pause"); }, 2800);
         };
-
         instance.onerror = function () {
           recognitionActive = false;
           answerDoneBtn.disabled = false;
           setStatus("Speech recognition paused. Select Answer finished/Pause when you are ready for the next question.", "warn");
         };
-
-        instance.onend = function () {
-          recognitionActive = false;
-        };
-
+        instance.onend = function () { recognitionActive = false; };
         return instance;
       }
 
       function startListeningForAnswer() {
         currentAnswer = "";
         answerDoneBtn.disabled = false;
-
         if (!recognition) recognition = getSpeechRecognition();
-
         if (!recognition) {
           setStatus("Answer now. Select Answer finished/Pause when you are ready for the next question.", "good");
           return;
         }
-
         try {
           recognition.start();
           recognitionActive = true;
@@ -647,9 +563,7 @@
 
       function stopCamera() {
         if (mediaStream) {
-          mediaStream.getTracks().forEach(function (track) {
-            track.stop();
-          });
+          mediaStream.getTracks().forEach(function (track) { track.stop(); });
           mediaStream = null;
         }
         cameraPreview.pause();
@@ -660,18 +574,13 @@
       function completeCurrentAnswer(reason) {
         stopListening();
         answerDoneBtn.disabled = true;
-
-        dialogueEntries[currentQuestionIndex] = {
-          answer: currentAnswer || "[Recorded on video]"
-        };
-
         if (currentQuestionIndex < questions.length - 1) {
           currentQuestionIndex += 1;
           hasCurrentPromptBeenAsked = false;
           askBtn.disabled = false;
           askBtn.textContent = "Ask next question";
-          updateQuestionProgress(reason === "pause" ? "Answer received. Ready for the next spoken prompt." : "Ready for the next spoken prompt.");
-          setStatus("Answer received. Select Ask next question.", "good");
+          updateQuestionProgress(reason === "pause" ? "Answer received. Read the next question, then select Ask next question." : "Read the next question, then select Ask next question.");
+          setStatus("Answer received. The next question is displayed on screen.", "good");
         } else {
           askBtn.disabled = true;
           updateQuestionProgress("All questions have been asked. Stop recording when you are finished.");
@@ -680,33 +589,28 @@
       }
 
       function speakQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        questionDisplay.textContent = currentQuestion.prompt;
         if (!window.speechSynthesis) {
-          const currentQuestion = questions[currentQuestionIndex];
-          questionDisplay.textContent = currentQuestion.prompt;
           setStatus("This browser does not support speech synthesis. Read the question on screen and select Answer finished/Pause to move through the recording manually.", "warn");
           startListeningForAnswer();
           return;
         }
-
         askBtn.disabled = true;
         repeatQuestionBtn.disabled = true;
         answerDoneBtn.disabled = true;
         window.speechSynthesis.cancel();
-        updateQuestionProgress("Tutor is asking the prompt aloud.");
-        const currentQuestion = questions[currentQuestionIndex];
-        questionDisplay.textContent = currentQuestion.prompt;
+        updateQuestionProgress("Tutor is asking this question aloud.");
         const utterance = new SpeechSynthesisUtterance(currentQuestion.prompt);
         const selectedVoice = voices[Number(voiceSelect.value)];
         if (selectedVoice) utterance.voice = selectedVoice;
         utterance.lang = selectedVoice ? selectedVoice.lang : "en-GB";
         utterance.rate = 0.92;
         utterance.pitch = 1.04;
-
         utterance.onstart = function () {
           hasCurrentPromptBeenAsked = true;
-          setStatus("The tutor is speaking. You can read the question on screen and answer after the voice finishes.", "good");
+          setStatus("The tutor is speaking. Read the full question in the Current question window.", "good");
         };
-
         utterance.onend = function () {
           if (currentQuestion.title === "Thank you") {
             askBtn.disabled = true;
@@ -717,13 +621,11 @@
             startListeningForAnswer();
           }
         };
-
         window.speechSynthesis.speak(utterance);
       }
 
       function repeatCurrentQuestion() {
-        if (!(mediaRecorder && mediaRecorder.state === "recording")) return;
-        if (!hasCurrentPromptBeenAsked) return;
+        if (!(mediaRecorder && mediaRecorder.state === "recording") || !hasCurrentPromptBeenAsked) return;
         if (window.speechSynthesis) window.speechSynthesis.cancel();
         stopListening();
         currentAnswer = "";
@@ -735,14 +637,7 @@
 
       async function setupCamera() {
         try {
-          mediaStream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: {
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
-              facingMode: "user"
-            }
-          });
+          mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } });
           cameraPreview.srcObject = mediaStream;
           await cameraPreview.play();
           setupBtn.disabled = true;
@@ -754,15 +649,8 @@
       }
 
       function getSupportedMimeType() {
-        const candidates = [
-          "video/webm;codecs=vp9,opus",
-          "video/webm;codecs=vp8,opus",
-          "video/webm"
-        ];
-
-        return candidates.find(function (type) {
-          return window.MediaRecorder && MediaRecorder.isTypeSupported(type);
-        }) || "";
+        const candidates = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"];
+        return candidates.find(function (type) { return window.MediaRecorder && MediaRecorder.isTypeSupported(type); }) || "";
       }
 
       function startRecording() {
@@ -770,15 +658,12 @@
           setStatus("Set up the camera and microphone first.", "warn");
           return;
         }
-
         recordedChunks = [];
         const mimeType = getSupportedMimeType();
         mediaRecorder = new MediaRecorder(mediaStream, mimeType ? { mimeType: mimeType } : undefined);
-
         mediaRecorder.addEventListener("dataavailable", function (event) {
           if (event.data && event.data.size > 0) recordedChunks.push(event.data);
         });
-
         mediaRecorder.addEventListener("stop", function () {
           const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || "video/webm" });
           const url = URL.createObjectURL(blob);
@@ -791,7 +676,6 @@
           setStatus("Recording complete. Preview or download your video.", "good");
           outputPanel.scrollIntoView({ behavior: "smooth", block: "start" });
         });
-
         mediaRecorder.start();
         startTimer();
         startBtn.disabled = true;
@@ -805,11 +689,9 @@
         downloadLink.setAttribute("aria-disabled", "true");
         currentQuestionIndex = 0;
         hasCurrentPromptBeenAsked = false;
-        dialogueEntries = [];
-        questionDisplay.textContent = "The question will appear here when the tutor asks it.";
-        updateQuestionProgress("Select Ask first question.");
+        updateQuestionProgress("Question 1 is displayed below. Select Ask first question to hear it aloud.");
         askBtn.textContent = "Ask first question";
-        setStatus("Recording started. Select Ask first question, then read or listen to Question 1 and answer on camera.", "good");
+        setStatus("Recording started. Read Question 1 in the window, then select Ask first question.", "good");
       }
 
       function stopRecording() {
@@ -831,7 +713,6 @@
         recordedChunks = [];
         currentQuestionIndex = 0;
         hasCurrentPromptBeenAsked = false;
-        dialogueEntries = [];
         currentAnswer = "";
         recordedVideo.removeAttribute("src");
         recordedVideo.load();
@@ -846,8 +727,7 @@
         stopBtn.disabled = true;
         timerText.textContent = "00:00";
         askBtn.textContent = "Ask first question";
-        questionDisplay.textContent = "The question will appear here when the tutor asks it.";
-        updateQuestionProgress("Ready to begin.");
+        updateQuestionProgress("Ready to begin. Question 1 is shown below.");
         setStatus(mediaStream ? "Ready for a new recording." : "Camera and microphone are not active yet.", mediaStream ? "good" : "");
       }
 
@@ -855,9 +735,7 @@
       startBtn.addEventListener("click", startRecording);
       askBtn.addEventListener("click", speakQuestion);
       repeatQuestionBtn.addEventListener("click", repeatCurrentQuestion);
-      answerDoneBtn.addEventListener("click", function () {
-        completeCurrentAnswer("manual");
-      });
+      answerDoneBtn.addEventListener("click", function () { completeCurrentAnswer("manual"); });
       stopBtn.addEventListener("click", stopRecording);
       newRecordingBtn.addEventListener("click", resetForNewRecording);
 
@@ -868,7 +746,7 @@
 
       populateVoices();
       if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = populateVoices;
-      updateQuestionProgress("Ready to begin.");
+      updateQuestionProgress("Ready to begin. Question 1 is shown below.");
     })();
   </script>
 </body>
