@@ -389,8 +389,6 @@
       const finishPanel = document.getElementById("finishPanel");
       const downloadLink = document.getElementById("downloadLink");
 
-      const introNote = "Please note that all urgent or serious personal matters should be reported at once to the Year Abroad team by email or phone. The purpose of this Tutor Post is to discuss more general and not-so-urgent issues.";
-
       const questions = [
         {
           title: "Introduction",
@@ -475,7 +473,6 @@
       let dialogueEntries = [];
       let currentAnswer = "";
       let hasCurrentPromptBeenAsked = false;
-      let introNotePlayed = false;
 
       function setStatus(message, kind) {
         statusLine.textContent = message;
@@ -675,33 +672,6 @@
           return;
         }
 
-        if (currentQuestionIndex === 0 && !introNotePlayed) {
-          introNotePlayed = true;
-          askBtn.disabled = true;
-          repeatQuestionBtn.disabled = true;
-          answerDoneBtn.disabled = true;
-          window.speechSynthesis.cancel();
-          updateQuestionProgress("Please listen to this important note before Question 1.");
-
-          const noteUtterance = new SpeechSynthesisUtterance(introNote);
-          const selectedVoice = voices[Number(voiceSelect.value)];
-          if (selectedVoice) noteUtterance.voice = selectedVoice;
-          noteUtterance.lang = selectedVoice ? selectedVoice.lang : "en-GB";
-          noteUtterance.rate = 0.92;
-          noteUtterance.pitch = 1.04;
-
-          noteUtterance.onstart = function () {
-            setStatus("Please listen to this important note before Question 1.", "good");
-          };
-
-          noteUtterance.onend = function () {
-            speakQuestion();
-          };
-
-          window.speechSynthesis.speak(noteUtterance);
-          return;
-        }
-
         askBtn.disabled = true;
         repeatQuestionBtn.disabled = true;
         answerDoneBtn.disabled = true;
@@ -818,11 +788,10 @@
         downloadLink.setAttribute("aria-disabled", "true");
         currentQuestionIndex = 0;
         hasCurrentPromptBeenAsked = false;
-        introNotePlayed = false;
         dialogueEntries = [];
         updateQuestionProgress("Select Ask first question.");
         askBtn.textContent = "Ask first question";
-        setStatus("Recording started. Select Ask first question, then listen to the note and answer Question 1 on camera.", "good");
+        setStatus("Recording started. Select Ask first question, then answer Question 1 on camera.", "good");
       }
 
       function stopRecording() {
@@ -846,7 +815,6 @@
         recordedChunks = [];
         currentQuestionIndex = 0;
         hasCurrentPromptBeenAsked = false;
-        introNotePlayed = false;
         dialogueEntries = [];
         currentAnswer = "";
         recordedVideo.removeAttribute("src");
