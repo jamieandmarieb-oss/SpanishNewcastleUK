@@ -76,7 +76,7 @@
 
     .main-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
+      grid-template-columns: minmax(0, 1fr) 380px;
       gap: 16px;
       align-items: start;
     }
@@ -128,6 +128,20 @@
       background: #eef5fb;
       color: #27435f;
       line-height: 1.5;
+    }
+
+    .question-window {
+      min-height: 150px;
+      margin: 12px 0 16px;
+      padding: 16px;
+      border: 1px solid #b9c6d4;
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 1.05rem;
+      line-height: 1.55;
+      display: flex;
+      align-items: center;
     }
 
     .controls {
@@ -303,7 +317,7 @@
         This video dialogue program asks the placement-status and year-so-far prompts aloud, one at a time, records your spoken reflection, and lets you download the recording as a video file.
       </p>
       <p>
-        The questions are not shown on screen. Start recording, then let the tutor voice guide the dialogue. The program will move to the next prompt after your answer, or you can select Answer finished/Pause.
+        Each question will appear on screen as the tutor voice reads it aloud. Start recording, then let the tutor voice guide the dialogue. The program will move to the next prompt after your answer, or you can select Answer finished/Pause.
       </p>
       <p><strong>Please note that all urgent or serious personal matters should be reported at once to the Year Abroad team by email or phone. The purpose of this Tutor Post is to discuss more general and not-so-urgent issues.</strong></p>
       <p><strong>The recorded video will not be stored on any external platform. It will remain solely on the student’s computer, and the student will then upload it directly to Canvas or sent to P.T. in accordance with data protection requirements. Please, click on "Set up camera", then "start recording" and navigate through the questions.</strong></p>
@@ -336,9 +350,12 @@
 
       <aside class="question-panel" aria-labelledby="questionHeading">
         <h2 id="questionHeading">Placement status</h2>
-        <p class="question-text" id="questionProgress">
-          Ready to begin. The questions will be asked aloud only.
-        </p>
+        <p class="question-text" id="questionProgress">Ready to begin.</p>
+
+        <div class="step-label">Current question</div>
+        <div class="question-window" id="questionDisplay" aria-live="polite">
+          The question will appear here when the tutor asks it.
+        </div>
 
         <label class="field" for="voiceSelect">
           Voice
@@ -384,6 +401,7 @@
       const timerBadge = document.getElementById("timerBadge");
       const questionHeading = document.getElementById("questionHeading");
       const questionProgress = document.getElementById("questionProgress");
+      const questionDisplay = document.getElementById("questionDisplay");
       const voiceSelect = document.getElementById("voiceSelect");
       const outputPanel = document.getElementById("outputPanel");
       const finishPanel = document.getElementById("finishPanel");
@@ -604,9 +622,7 @@
         currentAnswer = "";
         answerDoneBtn.disabled = false;
 
-        if (!recognition) {
-          recognition = getSpeechRecognition();
-        }
+        if (!recognition) recognition = getSpeechRecognition();
 
         if (!recognition) {
           setStatus("Answer now. Select Answer finished/Pause when you are ready for the next question.", "good");
@@ -625,9 +641,7 @@
 
       function stopListening() {
         window.clearTimeout(silenceTimer);
-        if (recognition && recognitionActive) {
-          recognition.stop();
-        }
+        if (recognition && recognitionActive) recognition.stop();
         recognitionActive = false;
       }
 
@@ -667,7 +681,9 @@
 
       function speakQuestion() {
         if (!window.speechSynthesis) {
-          setStatus("This browser does not support speech synthesis. Select Answer finished/Pause to move through the recording manually.", "warn");
+          const currentQuestion = questions[currentQuestionIndex];
+          questionDisplay.textContent = currentQuestion.prompt;
+          setStatus("This browser does not support speech synthesis. Read the question on screen and select Answer finished/Pause to move through the recording manually.", "warn");
           startListeningForAnswer();
           return;
         }
@@ -678,6 +694,7 @@
         window.speechSynthesis.cancel();
         updateQuestionProgress("Tutor is asking the prompt aloud.");
         const currentQuestion = questions[currentQuestionIndex];
+        questionDisplay.textContent = currentQuestion.prompt;
         const utterance = new SpeechSynthesisUtterance(currentQuestion.prompt);
         const selectedVoice = voices[Number(voiceSelect.value)];
         if (selectedVoice) utterance.voice = selectedVoice;
@@ -687,7 +704,7 @@
 
         utterance.onstart = function () {
           hasCurrentPromptBeenAsked = true;
-          setStatus("The tutor is speaking. Answer after the voice finishes.", "good");
+          setStatus("The tutor is speaking. You can read the question on screen and answer after the voice finishes.", "good");
         };
 
         utterance.onend = function () {
@@ -789,17 +806,16 @@
         currentQuestionIndex = 0;
         hasCurrentPromptBeenAsked = false;
         dialogueEntries = [];
+        questionDisplay.textContent = "The question will appear here when the tutor asks it.";
         updateQuestionProgress("Select Ask first question.");
         askBtn.textContent = "Ask first question";
-        setStatus("Recording started. Select Ask first question, then answer Question 1 on camera.", "good");
+        setStatus("Recording started. Select Ask first question, then read or listen to Question 1 and answer on camera.", "good");
       }
 
       function stopRecording() {
         if (window.speechSynthesis) window.speechSynthesis.cancel();
         stopListening();
-        if (mediaRecorder && mediaRecorder.state !== "inactive") {
-          mediaRecorder.stop();
-        }
+        if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
         stopCamera();
         stopTimer();
         startBtn.disabled = false;
@@ -830,7 +846,8 @@
         stopBtn.disabled = true;
         timerText.textContent = "00:00";
         askBtn.textContent = "Ask first question";
-        updateQuestionProgress("Ready to begin. The questions will be asked aloud only.");
+        questionDisplay.textContent = "The question will appear here when the tutor asks it.";
+        updateQuestionProgress("Ready to begin.");
         setStatus(mediaStream ? "Ready for a new recording." : "Camera and microphone are not active yet.", mediaStream ? "good" : "");
       }
 
@@ -850,10 +867,8 @@
       }
 
       populateVoices();
-      if (window.speechSynthesis) {
-        window.speechSynthesis.onvoiceschanged = populateVoices;
-      }
-      updateQuestionProgress("Ready to begin. The questions will be asked aloud only.");
+      if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = populateVoices;
+      updateQuestionProgress("Ready to begin.");
     })();
   </script>
 </body>
